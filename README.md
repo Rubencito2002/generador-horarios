@@ -31,7 +31,7 @@ Este proyecto evoluciona por fases, cada una añadida en ramas separadas para ma
 
 ## 📂 Estructura del proyecto
 
-```bash
+```
     generador_horarios/
     ├── main.py          # Código principal del generador
     ├── horario.json     # Archivo exportado (se genera al usar la app)
@@ -58,7 +58,7 @@ Este proyecto evoluciona por fases, cada una añadida en ramas separadas para ma
 
 ## 🧪 Uso del programa
 Al ejecutar main.py, verás un menú interactivo:
-```bash
+```
     1. Añadir tarea
     2. Ver tareas actuales
     3. Generar horario
@@ -105,11 +105,3 @@ Si quieres proponer mejoras, abre un issue o envía un pull request.
 #### 📄 Licencia
 Este proyecto se distribuye bajo la licencia MIT.
 Puedes usarlo, modificarlo y compartirlo libremente.
-
-```bash
-    ---
-    Cuando lo pegues en tu repo, quedará perfecto.
-
-    ¿Listo para empezar la **siguiente fase**?  
-    Si quieres, arrancamos ya con la **interfaz gráfica (Tkinter)** o con una mejora adicional en la versión de consola.
-```
