@@ -30,12 +30,13 @@ Este proyecto evoluciona por fases, cada una añadida en ramas separadas para ma
 ---
 
 ## 📂 Estructura del proyecto
-generador_horarios/
-│
-├── main.py          # Código principal del generador
-├── horario.json     # Archivo exportado (se genera al usar la app)
-└── README.md        # Este archivo
 
+```bash
+    generador_horarios/
+    ├── main.py          # Código principal del generador
+    ├── horario.json     # Archivo exportado (se genera al usar la app)
+    └── README.md        # Este archivo
+```
 ---
 
 ## 🖥️ Cómo ejecutar el proyecto
