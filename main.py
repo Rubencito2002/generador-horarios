@@ -1,33 +1,17 @@
 import json
 import random
 
-# ============================
-#   FASE 1: DATOS INICIALES
-# ============================
-
-tareas = [
-    {"nombre": "Matemáticas", "duracion": 2},
-    {"nombre": "Programación", "duracion": 1},
-    {"nombre": "Inglés", "duracion": 1},
-    {"nombre": "Historia", "duracion": 2},
-    {"nombre": "Física", "duracion": 1},
-]
-
-dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"]
-horas_por_dia = 4  # máximo de horas por día
-
-
-# ============================
-#   FASE 2: CREAR HORARIO
-# ============================
+# ============================================
+#   CREAR HORARIO VACÍO
+# ============================================
 
 def crear_horario(dias):
     return {dia: [] for dia in dias}
 
 
-# ============================
-#   FASE 3: VALIDACIONES
-# ============================
+# ============================================
+#   VALIDACIONES
+# ============================================
 
 def puede_añadirse(tarea, bloques_dia, horas_por_dia):
     horas_ocupadas = sum(b["duracion"] for b in bloques_dia)
@@ -43,31 +27,31 @@ def puede_añadirse(tarea, bloques_dia, horas_por_dia):
     return True
 
 
-# ============================
-#   FASE 4: ASIGNACIÓN
-# ============================
+# ============================================
+#   ASIGNACIÓN DE TAREAS
+# ============================================
 
 def asignar_tareas(tareas, dias, horas_por_dia, horario, modo="ordenado"):
-    # Modo ordenado: tareas largas primero
     if modo == "ordenado":
         tareas = sorted(tareas, key=lambda t: t["duracion"], reverse=True)
-
-    # Modo aleatorio
     elif modo == "aleatorio":
         tareas = tareas.copy()
         random.shuffle(tareas)
 
-    # Asignación
     for tarea in tareas:
+        asignada = False
         for dia in dias:
             if puede_añadirse(tarea, horario[dia], horas_por_dia):
                 horario[dia].append(tarea)
+                asignada = True
                 break
+        if not asignada:
+            print(f"⚠️ No se pudo asignar la tarea: {tarea['nombre']}")
 
 
-# ============================
-#   FASE 5: DESCANSOS
-# ============================
+# ============================================
+#   INSERTAR DESCANSOS
+# ============================================
 
 def insertar_descansos(horario, max_horas_seguidas=2):
     for dia, bloques in horario.items():
@@ -85,9 +69,9 @@ def insertar_descansos(horario, max_horas_seguidas=2):
         horario[dia] = nuevas
 
 
-# ============================
-#   FASE 6: MOSTRAR HORARIO
-# ============================
+# ============================================
+#   MOSTRAR HORARIO
+# ============================================
 
 def mostrar_horario(horario):
     print("\n===== HORARIO GENERADO =====")
@@ -99,30 +83,103 @@ def mostrar_horario(horario):
             print(f" - {b['nombre']} ({b['duracion']}h)")
 
 
-# ============================
-#   FASE 7: EXPORTAR JSON
-# ============================
+# ============================================
+#   EXPORTAR JSON
+# ============================================
 
 def exportar_json(horario, nombre_archivo="horario.json"):
     with open(nombre_archivo, "w", encoding="utf-8") as f:
         json.dump(horario, f, ensure_ascii=False, indent=4)
+    print(f"\n📁 Archivo '{nombre_archivo}' exportado correctamente.")
 
 
-# ============================
-#   FASE 8: MAIN
-# ============================
+# ============================================
+#   MENÚ INTERACTIVO
+# ============================================
+
+def menu():
+    print("\n===== GENERADOR DE HORARIOS AUTOMÁTICO =====")
+    print("1. Añadir tarea")
+    print("2. Ver tareas actuales")
+    print("3. Generar horario")
+    print("4. Exportar horario a JSON")
+    print("5. Salir")
+    return input("\nSelecciona una opción: ")
+
+
+# ============================================
+#   PROGRAMA PRINCIPAL
+# ============================================
 
 def main():
-    horario = crear_horario(dias)
+    dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"]
+    horas_por_dia = 4
+    tareas = []
+    horario = None
 
-    # Cambia "ordenado" por "aleatorio" si quieres probar otro modo
-    asignar_tareas(tareas, dias, horas_por_dia, horario, modo="ordenado")
+    while True:
+        opcion = menu()
 
-    insertar_descansos(horario)
-    mostrar_horario(horario)
+        # -------------------------
+        # 1. Añadir tarea
+        # -------------------------
+        if opcion == "1":
+            nombre = input("Nombre de la tarea: ")
+            duracion = int(input("Duración en horas: "))
+            tareas.append({"nombre": nombre, "duracion": duracion})
+            print("✔️ Tarea añadida.")
 
-    exportar_json(horario)
-    print("\nArchivo 'horario.json' exportado correctamente.")
+        # -------------------------
+        # 2. Ver tareas
+        # -------------------------
+        elif opcion == "2":
+            print("\n===== TAREAS ACTUALES =====")
+            if not tareas:
+                print("(No hay tareas aún)")
+            else:
+                for t in tareas:
+                    print(f"- {t['nombre']} ({t['duracion']}h)")
+
+        # -------------------------
+        # 3. Generar horario
+        # -------------------------
+        elif opcion == "3":
+            if not tareas:
+                print("⚠️ No hay tareas para generar el horario.")
+                continue
+
+            modo = input("Modo (ordenado/aleatorio): ").lower()
+            if modo not in ["ordenado", "aleatorio"]:
+                modo = "ordenado"
+
+            usar_descansos = input("¿Insertar descansos? (s/n): ").lower() == "s"
+
+            horario = crear_horario(dias)
+            asignar_tareas(tareas, dias, horas_por_dia, horario, modo)
+
+            if usar_descansos:
+                insertar_descansos(horario)
+
+            mostrar_horario(horario)
+
+        # -------------------------
+        # 4. Exportar JSON
+        # -------------------------
+        elif opcion == "4":
+            if horario is None:
+                print("⚠️ Primero genera un horario.")
+            else:
+                exportar_json(horario)
+
+        # -------------------------
+        # 5. Salir
+        # -------------------------
+        elif opcion == "5":
+            print("👋 Saliendo del programa...")
+            break
+
+        else:
+            print("❌ Opción no válida.")
 
 
 if __name__ == "__main__":
